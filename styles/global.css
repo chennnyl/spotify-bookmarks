@@ -1,3 +1,14 @@
 html, body {
     font-family: 'Source Sans Pro', sans-serif;
 }
+.pfp {
+    border-radius: 50%;
+    vertical-align: middle;
+}
+.bar {
+    display: inline-block;
+}
+
+.bar > h1 {
+    vertical-align: middle;
+}

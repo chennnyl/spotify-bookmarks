@@ -1,11 +1,17 @@
 import axios from "axios"
 import withSession from "../../lib/session"
 
+export const config = {
+    api: {
+        externalResolver: true
+    }
+}
+
 export default withSession(async (req, res) => {
-    const { code, error, state } = req.query;
+    const { code, error, state, origin } = req.query;
 
     if(code == undefined) {
-        res.status(403).send('<h1>403 Forbidden</h1>');
+        res.redirect("/error/403");
         return;
     }
 
@@ -27,8 +33,19 @@ export default withSession(async (req, res) => {
             req.session.set('auth_token', access_token);
             req.session.set('refresh_token', refresh_token);
             await req.session.save();
-            res.redirect("/home");
+            if(origin != 'redirect') {
+                res.redirect("/home");
+            } else {
+                res.json({status: "OK"})
+            }
             return;
+        }
+    ).catch(
+        (err) => {
+            if(err.response) {
+                res.redirect(`/error/${err.response.status}`);
+            }
+            
         }
     )
 });
